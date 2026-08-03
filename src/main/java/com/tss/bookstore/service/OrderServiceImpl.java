@@ -9,6 +9,7 @@ import com.tss.bookstore.entity.OrderItem;
 import com.tss.bookstore.entity.User;
 import com.tss.bookstore.enums.OrderStatus;
 import com.tss.bookstore.exception.InsufficientStockException;
+import com.tss.bookstore.exception.InvalidOrderStateException;
 import com.tss.bookstore.exception.NotFoundException;
 import com.tss.bookstore.mapper.OrderMapper;
 import com.tss.bookstore.repository.BookRepository;
@@ -119,12 +120,11 @@ public class OrderServiceImpl implements OrderService{
                 .orElseThrow(() -> new NotFoundException("Order not found with id : " + orderId));
 
         if (order.getStatus() == OrderStatus.CANCELLED) {
-            throw new RuntimeException("Order is already cancelled.");
+            throw new InvalidOrderStateException("Order is already cancelled.");
         }
 
         if (order.getStatus() == OrderStatus.COMPLETED) {
-            throw new RuntimeException(
-                    "Completed order cannot be cancelled.");
+            throw new InvalidOrderStateException("Completed order cannot be cancelled.");
         }
 
         for (OrderItem item : order.getOrderItems()) {

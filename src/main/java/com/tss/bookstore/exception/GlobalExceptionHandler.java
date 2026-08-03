@@ -45,6 +45,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidOrderStateException.class)
+    public ResponseEntity<ErrorResponseDto> invalidOrderStateException(InvalidOrderStateException invalidOrderStateException, HttpServletRequest request){
+        ErrorResponseDto error=new ErrorResponseDto(
+                HttpStatus.CONFLICT.value(),
+                invalidOrderStateException.getMessage(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(
+                error,
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ErrorResponseDto> InsufficientStockException(InsufficientStockException insufficientStockException, HttpServletRequest request){
         ErrorResponseDto error=new ErrorResponseDto(

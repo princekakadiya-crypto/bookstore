@@ -1,9 +1,7 @@
 package com.tss.bookstore.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,7 +9,8 @@ import java.time.LocalDate;
 @Table(name = "user_profile")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class UserProfile {
     @Column(name = "user_profile_id")
     @Id

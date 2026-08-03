@@ -3,7 +3,9 @@ package com.tss.bookstore.controller;
 import com.tss.bookstore.dto.BookRequestDto;
 import com.tss.bookstore.dto.BookResponseDto;
 import com.tss.bookstore.dto.PageDto;
+import com.tss.bookstore.dto.StockRequestDto;
 import com.tss.bookstore.service.BookService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,5 +49,17 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{bookId}/stock")
+    public ResponseEntity<Void> updateStock(@PathVariable Long bookId, @Valid @RequestBody StockRequestDto stockRequestDto) {
+        bookService.updateStock(bookId, stockRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{bookId}/average-rating")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Long bookId) {
+
+        return ResponseEntity.ok(bookService.getAverageRating(bookId));
     }
 }

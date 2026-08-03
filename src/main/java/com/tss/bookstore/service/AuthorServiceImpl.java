@@ -1,7 +1,11 @@
 package com.tss.bookstore.service;
 
+import com.tss.bookstore.dto.BookResponseDto;
+import com.tss.bookstore.entity.Book;
 import com.tss.bookstore.mapper.AuthorMapper;
+import com.tss.bookstore.mapper.BookMapper;
 import com.tss.bookstore.repository.AuthorRepository;
+import com.tss.bookstore.repository.BookRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.tss.bookstore.dto.AuthorRequestDto;
@@ -18,13 +22,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class AuthorServiceImpl implements AuthorService{
     private final AuthorMapper authorMapper;
     private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
     @Override
     @Transactional
     public AuthorResponseDto addAuthor(AuthorRequestDto requestDto) {
@@ -99,4 +108,5 @@ public class AuthorServiceImpl implements AuthorService{
 
         author.setIsActive(false);
     }
+
 }

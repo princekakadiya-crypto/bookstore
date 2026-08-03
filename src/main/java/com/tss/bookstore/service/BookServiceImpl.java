@@ -3,6 +3,7 @@ package com.tss.bookstore.service;
 import com.tss.bookstore.dto.BookRequestDto;
 import com.tss.bookstore.dto.BookResponseDto;
 import com.tss.bookstore.dto.PageDto;
+import com.tss.bookstore.dto.StockRequestDto;
 import com.tss.bookstore.entity.Author;
 import com.tss.bookstore.entity.Book;
 import com.tss.bookstore.entity.Category;
@@ -10,14 +11,12 @@ import com.tss.bookstore.entity.Publisher;
 import com.tss.bookstore.exception.DuplicateResourceException;
 import com.tss.bookstore.exception.NotFoundException;
 import com.tss.bookstore.mapper.BookMapper;
-import com.tss.bookstore.repository.AuthorRepository;
-import com.tss.bookstore.repository.BookRepository;
-import com.tss.bookstore.repository.CategoryRepository;
-import com.tss.bookstore.repository.PublisherRepository;
+import com.tss.bookstore.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class BookServiceImpl implements BookService{
     private final PublisherRepository publisherRepository;
     private final CategoryRepository categoryRepository;
     private final BookMapper bookMapper;
+    private final ReviewRepository reviewRepository;
 
     @Override
     @Transactional
@@ -130,19 +130,66 @@ public class BookServiceImpl implements BookService{
         book.setIsActive(false);
     }
 
+    @Override
+    public PageDto<BookResponseDto> getBooksBuAuthorId(Long authorId, Pageable pageable) {
+        authorRepository.findByAuthorIdAndIsActiveTrue(authorId)
+                .orElseThrow(() -> new NotFoundException("Author not found with id : " + authorId));
+
+        Page<Book> books = bookRepository.findByIsActiveTrue(pageable);
+
+        List<BookResponseDto> responseDtos = new ArrayList<>();
+        for(Book book : books.getContent()){
+            responseDtos.add(convertToResponse(book));
+        }
+
+        PageDto<BookResponseDto> pageDto = new PageDto<>();
+        pageDto.setContent(responseDtos);
+        pageDto.setCurrentPage(books.getNumber());
+        pageDto.setPageSize(books.getSize());
+        pageDto.setTotalPages(books.getTotalPages());
+        pageDto.setTotalElements(books.getTotalElements());
+        pageDto.setFirst(books.isFirst());
+        pageDto.setLast(books.isLast());
+        pageDto.setEmpty(books.isEmpty());
+
+        return pageDto;
+    }
+
+    @Override
+    @Transactional
+    public void updateStock(Long bookId, StockRequestDto stockRequestDto) {
+
+        Book book = bookRepository.findByBookIdAndIsActiveTrue(bookId)
+                .orElseThrow(() -> new NotFoundException("Book not found with id : " + bookId));
+
+        book.setStock(stockRequestDto.getStock());
+
+        Book updatedBook = bookRepository.save(book);
+    }
+
+    @Override
+    public Double getAverageRating(Long bookId) {
+
+        if (!bookRepository.existsById(bookId)) {
+            throw new NotFoundException("Book not found with id : " + bookId);
+        }
+
+        return reviewRepository.getAverageRating(bookId);
+    }
+
     private BookResponseDto convertToResponse(Book book){
         BookResponseDto dto = bookMapper.toDto(book);
 
-        Set<Long> authorIds = new HashSet<>();
+        Set<String> authorNames = new HashSet<>();
         for(Author author : book.getAuthors()){
-            authorIds.add(author.getAuthorId());
+            authorNames.add(author.getName());
         }
-        dto.setAuthorIds(authorIds);
-        dto.setPublisherId(
-                book.getPublisher().getPublisherId()
+        dto.setAuthorNames(authorNames);
+        dto.setPublisherName(
+                book.getPublisher().getName()
         );
-        dto.setCategoryId(
-                book.getCategory().getCategoryId()
+        dto.setCategoryName(
+                book.getCategory().getName()
         );
         return dto;
     }

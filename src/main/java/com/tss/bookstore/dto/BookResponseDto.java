@@ -15,9 +15,9 @@ public class BookResponseDto {
 
     private Integer stock;
 
-    private Set<Long> authorIds;
+    private Set<String> authorNames;
 
-    private Long publisherId;
+    private String publisherName;
 
-    private Long categoryId;
+    private String categoryName;
 }
