@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public UserResponseDto addUser(UserRequestDto requestDto) {
 
-        if(userRepository.existsByEmail(requestDto.getEmail())){
+        if(userRepository.existsByEmailIgnoreCase(requestDto.getEmail())){
             throw new DuplicateResourceException(
                     "Email already exists");
         }
