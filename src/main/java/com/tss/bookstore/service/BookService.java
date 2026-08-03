@@ -13,7 +13,7 @@ public interface BookService {
 
     BookResponseDto getBookById(Long bookId);
 
-    PageDto<BookResponseDto> getAllBooks(String title, Long categoryId, Double minPrice, Double maxPrice,Pageable pageable);
+    PageDto<BookResponseDto> getAllBooks(String title, Long categoryId,String category,Long authorId,String author, Double minPrice, Double maxPrice,Boolean inStock,Pageable pageable);
 
     void deleteBook(Long bookId);
 

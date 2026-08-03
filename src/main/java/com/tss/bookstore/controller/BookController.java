@@ -23,7 +23,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookResponseDto> addBook(@RequestBody BookRequestDto dto) {
+    public ResponseEntity<BookResponseDto> addBook(@Valid @RequestBody BookRequestDto dto) {
         return new ResponseEntity<>(bookService.addBook(dto), HttpStatus.CREATED
         );
     }
@@ -41,12 +41,16 @@ public class BookController {
     @GetMapping
     public ResponseEntity<PageDto<BookResponseDto>> getAllBooks(
             @RequestParam(required = false) String title,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long authorId,
+            @RequestParam(required = false) String author,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean inStock,
             Pageable pageable) {
         return ResponseEntity.ok(
-                bookService.getAllBooks(title, categoryId, minPrice, maxPrice, pageable)
+                bookService.getAllBooks(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable)
         );
     }
 

@@ -36,5 +36,12 @@ public class UserRequestDto {
 
     @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
+
+    @AssertTrue(message = "User must be at least 10 years old")
+    public boolean minAge() {
+        return dateOfBirth != null &&
+                !dateOfBirth.isAfter(LocalDate.now().minusYears(10));
+    }
+
     private String avatar;
 }

@@ -22,6 +22,8 @@ public class Book {
     @Column
     private Double price;
     @Column
+    private String ISBN;
+    @Column
     private Integer stock;
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive=true;

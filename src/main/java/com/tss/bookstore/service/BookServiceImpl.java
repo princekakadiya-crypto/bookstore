@@ -41,6 +41,10 @@ public class BookServiceImpl implements BookService{
             throw new DuplicateResourceException("Book already exists with title : " + requestDto.getTitle());
         }
 
+        if(bookRepository.existsByISBN(requestDto.getISBN())){
+            throw new DuplicateResourceException("Book already exists with ISBN : " + requestDto.getISBN());
+        }
+
         Book book = bookMapper.toEntity(requestDto);
 
         Set<Author> authors = new HashSet<>(authorRepository.findAllById(requestDto.getAuthorIds()));
@@ -69,6 +73,10 @@ public class BookServiceImpl implements BookService{
 
         Book book = bookRepository.findByBookIdAndIsActiveTrue(bookId).orElseThrow(
                         ()->new NotFoundException("Book not found with id : " + bookId));
+
+        if(bookRepository.existsByISBNAndBookIdNot(requestDto.getISBN(),bookId)){
+            throw new DuplicateResourceException("Book already exists with ISBN : " + requestDto.getISBN());
+        }
 
         Set<Author> authors = new HashSet<>(authorRepository.findAllById(requestDto.getAuthorIds()));
 
@@ -99,13 +107,13 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public PageDto<BookResponseDto> getAllBooks(String title, Long categoryId, Double minPrice, Double maxPrice,Pageable pageable) {
+    public PageDto<BookResponseDto> getAllBooks(String title, Long categoryId,String category,Long authorId,String author, Double minPrice, Double maxPrice,Boolean inStock,Pageable pageable) {
 
         if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
             throw new IllegalArgumentException("Maximum price must be greater than or equal to minimum price.");
         }
 
-        Page<Book> books = bookRepository.searchBooks(title,categoryId,minPrice,maxPrice,pageable);
+        Page<Book> books = bookRepository.searchBooks(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable);
 
         List<BookResponseDto> responseDtos = new ArrayList<>();
         for(Book book : books.getContent()){
@@ -168,7 +176,7 @@ public class BookServiceImpl implements BookService{
 
         book.setStock(stockRequestDto.getStock());
 
-        Book updatedBook = bookRepository.save(book);
+        bookRepository.save(book);
     }
 
     @Override

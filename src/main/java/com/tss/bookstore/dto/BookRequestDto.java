@@ -16,6 +16,9 @@ public class BookRequestDto {
     @Positive(message = "Price must be positive")
     private Double price;
 
+    @NotNull(message = "ISBN is required")
+    private String ISBN;
+
     @NotNull(message = "Stock is required")
     @PositiveOrZero(message = "Stock cannot be negative")
     private Integer stock;

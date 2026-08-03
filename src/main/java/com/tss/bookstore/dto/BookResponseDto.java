@@ -13,6 +13,8 @@ public class BookResponseDto {
 
     private Double price;
 
+    private String ISBN;
+
     private Integer stock;
 
     private Set<String> authorNames;
