@@ -75,6 +75,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> illegalArgumentException(IllegalArgumentException illegalArgumentException, HttpServletRequest request){
+        ErrorResponseDto error=new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                illegalArgumentException.getMessage(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(
+                error,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorValidationResponse> handleValidationException(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();

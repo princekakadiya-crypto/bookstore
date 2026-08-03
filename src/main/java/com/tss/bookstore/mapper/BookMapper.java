@@ -14,4 +14,5 @@ public interface BookMapper {
     Book toEntity(BookRequestDto dto);
 
     BookResponseDto toDto(Book book);
+
 }

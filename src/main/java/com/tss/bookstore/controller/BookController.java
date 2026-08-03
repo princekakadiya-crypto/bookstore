@@ -39,9 +39,14 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<PageDto<BookResponseDto>> getAllBooks(Pageable pageable) {
+    public ResponseEntity<PageDto<BookResponseDto>> getAllBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            Pageable pageable) {
         return ResponseEntity.ok(
-                bookService.getAllBooks(pageable)
+                bookService.getAllBooks(title, categoryId, minPrice, maxPrice, pageable)
         );
     }
 

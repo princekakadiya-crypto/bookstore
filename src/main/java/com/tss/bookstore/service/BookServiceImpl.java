@@ -1,9 +1,6 @@
 package com.tss.bookstore.service;
 
-import com.tss.bookstore.dto.BookRequestDto;
-import com.tss.bookstore.dto.BookResponseDto;
-import com.tss.bookstore.dto.PageDto;
-import com.tss.bookstore.dto.StockRequestDto;
+import com.tss.bookstore.dto.*;
 import com.tss.bookstore.entity.Author;
 import com.tss.bookstore.entity.Book;
 import com.tss.bookstore.entity.Category;
@@ -12,10 +9,12 @@ import com.tss.bookstore.exception.DuplicateResourceException;
 import com.tss.bookstore.exception.NotFoundException;
 import com.tss.bookstore.mapper.BookMapper;
 import com.tss.bookstore.repository.*;
+import jakarta.persistence.criteria.Join;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.history.RevisionRepository;
 import org.springframework.stereotype.Service;
 
@@ -100,8 +99,13 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public PageDto<BookResponseDto> getAllBooks(Pageable pageable) {
-        Page<Book> books = bookRepository.findByIsActiveTrue(pageable);
+    public PageDto<BookResponseDto> getAllBooks(String title, Long categoryId, Double minPrice, Double maxPrice,Pageable pageable) {
+
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new IllegalArgumentException("Maximum price must be greater than or equal to minimum price.");
+        }
+
+        Page<Book> books = bookRepository.searchBooks(title,categoryId,minPrice,maxPrice,pageable);
 
         List<BookResponseDto> responseDtos = new ArrayList<>();
         for(Book book : books.getContent()){
@@ -193,4 +197,5 @@ public class BookServiceImpl implements BookService{
         );
         return dto;
     }
+
 }
