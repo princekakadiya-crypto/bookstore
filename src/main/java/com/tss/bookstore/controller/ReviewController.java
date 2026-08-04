@@ -1,10 +1,12 @@
 package com.tss.bookstore.controller;
 
+import com.tss.bookstore.dto.PageDto;
 import com.tss.bookstore.dto.ReviewRequestDto;
 import com.tss.bookstore.dto.ReviewResponseDto;
 import com.tss.bookstore.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +35,9 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReviewResponseDto>> getAll(){
+    public ResponseEntity<PageDto<ReviewResponseDto>> getAll(Pageable pageable){
         return ResponseEntity.ok(
-                reviewService.getAllReviews()
+                reviewService.getAllReviews(pageable)
         );
     }
 

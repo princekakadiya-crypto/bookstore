@@ -1,0 +1,88 @@
+2026-08-04T16:03:24.093+05:30  INFO 7284 --- [bookstore] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-04T16:03:24.329+05:30  INFO 7284 --- [bookstore] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-08-04T16:03:24.333+05:30  INFO 7284 --- [bookstore] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T16:03:24.334+05:30  INFO 7284 --- [bookstore] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-04T16:03:24.338+05:30  INFO 7284 --- [bookstore] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-04T16:03:26.982+05:30  INFO 5000 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : Starting BookstoreApplication using Java 18.0.2.1 with PID 5000 (C:\prince\assignment1\bookstore\target\classes started by Prince.Kakadiya in C:\prince\assignment1\bookstore)
+2026-08-04T16:03:26.986+05:30  INFO 5000 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-08-04T16:03:28.141+05:30  INFO 5000 --- [bookstore] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-04T16:03:28.243+05:30  INFO 5000 --- [bookstore] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 93 ms. Found 9 JPA repository interfaces.
+2026-08-04T16:03:28.734+05:30  INFO 5000 --- [bookstore] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-08-04T16:03:28.750+05:30  INFO 5000 --- [bookstore] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-04T16:03:28.751+05:30  INFO 5000 --- [bookstore] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-08-04T16:03:28.828+05:30  INFO 5000 --- [bookstore] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1784 ms
+2026-08-04T16:03:29.053+05:30  INFO 5000 --- [bookstore] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-04T16:03:29.204+05:30  INFO 5000 --- [bookstore] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-08-04T16:03:29.660+05:30  INFO 5000 --- [bookstore] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-04T16:03:29.692+05:30  INFO 5000 --- [bookstore] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-04T16:03:29.911+05:30  INFO 5000 --- [bookstore] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5ddd84d2
+2026-08-04T16:03:29.914+05:30  INFO 5000 --- [bookstore] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-04T16:03:29.987+05:30  INFO 5000 --- [bookstore] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/bookstore_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.4
+	Default catalog/schema: bookstore_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-04T16:03:31.976+05:30  INFO 5000 --- [bookstore] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-04T16:03:32.101+05:30  INFO 5000 --- [bookstore] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T16:03:32.182+05:30  INFO 5000 --- [bookstore] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-04T16:03:33.079+05:30  WARN 5000 --- [bookstore] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-04T16:03:33.595+05:30  INFO 5000 --- [bookstore] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-08-04T16:03:33.608+05:30  INFO 5000 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : Started BookstoreApplication in 7.202 seconds (process running for 7.889)
+2026-08-04T16:03:39.034+05:30  INFO 5000 --- [bookstore] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-04T16:03:39.035+05:30  INFO 5000 --- [bookstore] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-04T16:03:39.036+05:30  INFO 5000 --- [bookstore] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-08-04T16:03:39.129+05:30  WARN 5000 --- [bookstore] [http-nio-8080-exec-1] c.t.b.exception.GlobalExceptionHandler   : Resource not found: User not found with id : 160 | URI: /app/orders/user/160
+2026-08-04T16:06:24.811+05:30  INFO 5000 --- [bookstore] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-04T16:06:25.074+05:30  INFO 5000 --- [bookstore] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-08-04T16:06:25.092+05:30  INFO 5000 --- [bookstore] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T16:06:25.106+05:30  INFO 5000 --- [bookstore] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-04T16:06:25.117+05:30  INFO 5000 --- [bookstore] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-04T16:06:28.042+05:30  INFO 19708 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : Starting BookstoreApplication using Java 18.0.2.1 with PID 19708 (C:\prince\assignment1\bookstore\target\classes started by Prince.Kakadiya in C:\prince\assignment1\bookstore)
+2026-08-04T16:06:28.052+05:30 DEBUG 19708 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : Running with Spring Boot v4.1.0, Spring v7.0.8
+2026-08-04T16:06:28.053+05:30  INFO 19708 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-08-04T16:06:28.753+05:30  INFO 19708 --- [bookstore] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-04T16:06:28.836+05:30  INFO 19708 --- [bookstore] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 76 ms. Found 9 JPA repository interfaces.
+2026-08-04T16:06:29.275+05:30  INFO 19708 --- [bookstore] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-08-04T16:06:29.289+05:30  INFO 19708 --- [bookstore] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-04T16:06:29.290+05:30  INFO 19708 --- [bookstore] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-08-04T16:06:29.362+05:30  INFO 19708 --- [bookstore] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1253 ms
+2026-08-04T16:06:29.524+05:30  INFO 19708 --- [bookstore] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-04T16:06:29.584+05:30  INFO 19708 --- [bookstore] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-08-04T16:06:30.018+05:30  INFO 19708 --- [bookstore] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-04T16:06:30.051+05:30  INFO 19708 --- [bookstore] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-04T16:06:30.293+05:30  INFO 19708 --- [bookstore] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@9880a15
+2026-08-04T16:06:30.294+05:30  INFO 19708 --- [bookstore] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-04T16:06:30.365+05:30  INFO 19708 --- [bookstore] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/bookstore_db]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.4
+	Default catalog/schema: bookstore_db/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-04T16:06:31.938+05:30  INFO 19708 --- [bookstore] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-04T16:06:32.051+05:30  INFO 19708 --- [bookstore] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T16:06:32.113+05:30  INFO 19708 --- [bookstore] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-04T16:06:33.192+05:30  WARN 19708 --- [bookstore] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-04T16:06:33.490+05:30  INFO 19708 --- [bookstore] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-08-04T16:06:33.495+05:30  INFO 19708 --- [bookstore] [main] com.tss.bookstore.BookstoreApplication   : Started BookstoreApplication in 6.006 seconds (process running for 6.606)
+2026-08-04T16:06:39.675+05:30  INFO 19708 --- [bookstore] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-04T16:06:39.676+05:30  INFO 19708 --- [bookstore] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-04T16:06:39.682+05:30  INFO 19708 --- [bookstore] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-08-04T16:06:39.885+05:30 DEBUG 19708 --- [bookstore] [http-nio-8080-exec-1] c.t.bookstore.service.OrderServiceImpl   : Fetching order. userId=16
+2026-08-04T16:12:10.507+05:30  INFO 19708 --- [bookstore] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-04T16:12:10.829+05:30  INFO 19708 --- [bookstore] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-08-04T16:12:10.870+05:30  INFO 19708 --- [bookstore] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T16:12:10.907+05:30  INFO 19708 --- [bookstore] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-04T16:12:10.930+05:30  INFO 19708 --- [bookstore] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -12,6 +12,8 @@ import com.tss.bookstore.mapper.UserProfileMapper;
 import com.tss.bookstore.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +28,19 @@ public class UserServiceImpl implements UserService{
     private final UserMapper userMapper;
     private final UserProfileMapper userProfileMapper;
     private final UserRepository userRepository;
+
+    private static final Logger log= LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Override
     @Transactional
     public UserResponseDto addUser(UserRequestDto requestDto) {
+        log.info("Creating user. email={}", requestDto.getEmail());
 
         if(userRepository.existsByEmailIgnoreCase(requestDto.getEmail())){
+            log.info(
+                    "Creating user. email={}",
+                    requestDto.getEmail()
+            );
             throw new DuplicateResourceException(
                     "Email already exists");
         }
@@ -42,12 +52,19 @@ public class UserServiceImpl implements UserService{
         UserResponseDto responseDto=userMapper.toDto(result);
         responseDto.setProfile(userProfileMapper.toDto(result.getUserProfile()));
 
+        log.info(
+                "User created successfully. userId={}, email={}",
+                result.getUserId(),
+                result.getEmail()
+        );
+
         return responseDto;
     }
 
     @Override
     @Transactional
     public UserResponseDto editUser(Long userId,UserRequestDto requestDto) {
+        log.info("Updating user. userId={}", userId);
         User user=userRepository.findByUserIdAndIsActiveTrue(userId).orElseThrow(
                 ()-> new NotFoundException("User Not Found")
         );
@@ -71,14 +88,18 @@ public class UserServiceImpl implements UserService{
 
         User result = userRepository.save(user);
 
+        log.info("User updated successfully. userId={}", userId);
+
         UserResponseDto responseDto=userMapper.toDto(result);
         responseDto.setProfile(userProfileMapper.toDto(result.getUserProfile()));
+
 
         return responseDto;
     }
 
     @Override
     public UserResponseDto getUserById(Long userId) {
+        log.debug("Fetching user. userId={}", userId);
         User user=userRepository.findByUserIdAndIsActiveTrue(userId).orElseThrow(
                 ()-> new NotFoundException("User Not Found")
         );
@@ -90,6 +111,12 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public PageDto<UserResponseDto> getAllUser(Pageable pageable) {
+
+        log.debug(
+                "Fetching users. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
 
         Page<User> users = userRepository.findByIsActiveTrue(pageable);
         List<UserResponseDto> responseDtos = new ArrayList<>();
@@ -117,10 +144,11 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void deleteUser(Long userId) {
-
+        log.info("Soft deleting user. userId={}", userId);
         User user = userRepository.findByUserIdAndIsActiveTrue(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with id : " + userId));
         user.setActive(false);
         userRepository.save(user);
+        log.info("User deleted successfully. userId={}", userId);
     }
 }

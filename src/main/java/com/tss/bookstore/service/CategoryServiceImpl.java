@@ -10,6 +10,8 @@ import com.tss.bookstore.mapper.CategoryMapper;
 import com.tss.bookstore.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,23 +25,31 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
+    private static final Logger log= LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     @Override
     @Transactional
     public CategoryResponseDto addCategory(CategoryRequestDto requestDto) {
-
+        log.info("Creating category with name: {}", requestDto.getName());
         if (categoryRepository.existsByNameIgnoreCase(requestDto.getName())) {
             throw new DuplicateResourceException("Category already exists with name : " + requestDto.getName());
         }
 
         Category category = categoryMapper.toEntity(requestDto);
         Category savedCategory = categoryRepository.save(category);
+
+        log.info(
+                "Category created successfully. categoryId={}, name={}",
+                savedCategory.getCategoryId(),
+                savedCategory.getName()
+        );
         return categoryMapper.toDto(savedCategory);
     }
 
     @Override
     @Transactional
     public CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto requestDto) {
-
+        log.info("Updating category. categoryId={}", categoryId);
         Category category = categoryRepository.findByCategoryIdAndIsActiveTrue(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category not found with id : " + categoryId));
 
@@ -52,12 +62,13 @@ public class CategoryServiceImpl implements CategoryService{
         category.setName(requestDto.getName());
         category.setDescription(requestDto.getDescription());
 
+        log.info("Category updated successfully. categoryId={}", category.getCategoryId());
         return categoryMapper.toDto(category);
     }
 
     @Override
     public CategoryResponseDto getCategoryById(Long categoryId) {
-
+        log.debug("Fetching category. categoryId={}", categoryId);
         Category category = categoryRepository.findByCategoryIdAndIsActiveTrue(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category not found with id : " + categoryId));
 
@@ -66,6 +77,11 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public PageDto<CategoryResponseDto> getAllCategories(Pageable pageable) {
+        log.debug(
+                "Fetching categories. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
 
         Page<Category> categories = categoryRepository.findByIsActiveTrue(pageable);
 
@@ -94,9 +110,15 @@ public class CategoryServiceImpl implements CategoryService{
     @Transactional
     public void deleteCategory(Long categoryId) {
 
+        log.info("Soft deleting category. categoryId={}", categoryId);
+
         Category category = categoryRepository.findByCategoryIdAndIsActiveTrue(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category not found with id : " + categoryId));
 
         category.setIsActive(false);
+        log.info(
+                "Category deleted successfully. categoryId={}",
+                categoryId
+        );
     }
 }

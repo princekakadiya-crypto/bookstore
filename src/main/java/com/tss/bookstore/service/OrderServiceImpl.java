@@ -18,6 +18,8 @@ import com.tss.bookstore.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,6 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-@Transactional
 public class OrderServiceImpl implements OrderService{
 
     private final OrderRepository orderRepository;
@@ -36,9 +37,12 @@ public class OrderServiceImpl implements OrderService{
     private final BookRepository bookRepository;
     private final OrderMapper orderMapper;
 
-    @Override
-    public OrderResponseDto placeOrder(OrderRequestDto requestDto) {
+    private static final Logger log= LoggerFactory.getLogger(OrderServiceImpl.class);
 
+    @Override
+    @Transactional
+    public OrderResponseDto placeOrder(OrderRequestDto requestDto) {
+        log.info("Placing order. userId={}", requestDto.getUserId());
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
                 () -> new NotFoundException("User not found with id : " + requestDto.getUserId()));
 
@@ -74,11 +78,18 @@ public class OrderServiceImpl implements OrderService{
         order.setOrderItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);
+        log.info(
+                "Order placed successfully. orderId={}, userId={}, totalAmount={}",
+                savedOrder.getOrderId(),
+                savedOrder.getUser().getUserId(),
+                savedOrder.getTotalAmount()
+        );
         return orderMapper.entityToDto(savedOrder);
     }
 
     @Override
     public OrderResponseDto getOrderById(Long orderId) {
+        log.debug("Fetching order. orderId={}", orderId);
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found with id : " + orderId));
@@ -89,12 +100,19 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Page<OrderResponseDto> getAllOrders(Pageable pageable) {
 
+        log.debug(
+                "Fetching orders. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
         Page<Order> orders = orderRepository.findAll(pageable);
         return orders.map(orderMapper::entityToDto);
     }
 
     @Override
     public List<OrderResponseDto> getOrdersByUser(Long userId) {
+        log.debug("Fetching order. userId={}", userId);
 
         userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found with id : " + userId));
@@ -103,18 +121,24 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional
     public OrderResponseDto updateOrderStatus(Long orderId, OrderStatus status) {
+
+        log.info("Updating order status. orderId={}, newStatus={}", orderId, status);
 
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new NotFoundException("Order not found with id : " + orderId));
 
         order.setStatus(status);
-
-        return orderMapper.entityToDto(orderRepository.save(order));
+        Order savedOrder=orderRepository.save(order);
+        log.info("Order status updated successfully. orderId={}, status={}", orderId, order.getStatus());
+        return orderMapper.entityToDto(savedOrder);
     }
 
     @Override
+    @Transactional
     public void cancelOrder(Long orderId) {
+        log.info("Cancelling order. orderId={}", orderId);
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found with id : " + orderId));
@@ -135,6 +159,7 @@ public class OrderServiceImpl implements OrderService{
         }
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
+        log.info("Order cancelled successfully. orderId={}", orderId);
     }
 
 }

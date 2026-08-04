@@ -7,6 +7,8 @@ import com.tss.bookstore.mapper.BookMapper;
 import com.tss.bookstore.repository.AuthorRepository;
 import com.tss.bookstore.repository.BookRepository;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.tss.bookstore.dto.AuthorRequestDto;
 import com.tss.bookstore.dto.AuthorResponseDto;
@@ -32,20 +34,22 @@ import java.util.Set;
 public class AuthorServiceImpl implements AuthorService{
     private final AuthorMapper authorMapper;
     private final AuthorRepository authorRepository;
-    private final BookRepository bookRepository;
-    private final BookMapper bookMapper;
+
+    private static final Logger log = LoggerFactory.getLogger(AuthorServiceImpl.class);
+
     @Override
     @Transactional
     public AuthorResponseDto addAuthor(AuthorRequestDto requestDto) {
+
+        log.info("Creating author with name: {}", requestDto.getName());
 
         if (authorRepository.existsByNameIgnoreCase(requestDto.getName())) {
             throw new DuplicateResourceException("Author already exists with name : " + requestDto.getName());
         }
 
         Author author = authorMapper.toEntity(requestDto);
-
         Author savedAuthor = authorRepository.save(author);
-
+        log.info("Author created successfully. authorId={}, name={}", savedAuthor.getAuthorId(), savedAuthor.getName());
         return authorMapper.toDto(savedAuthor);
     }
 
@@ -53,6 +57,7 @@ public class AuthorServiceImpl implements AuthorService{
     @Transactional
     public AuthorResponseDto updateAuthor(Long authorId, AuthorRequestDto requestDto) {
 
+        log.info("Updating author. authorId={}", authorId);
         Author author = authorRepository.findByAuthorIdAndIsActiveTrue(authorId)
                 .orElseThrow(() -> new NotFoundException("Author not found with id : " + authorId));
 
@@ -63,12 +68,13 @@ public class AuthorServiceImpl implements AuthorService{
         author.setName(requestDto.getName());
         author.setCountry(requestDto.getCountry());
 
+        log.info("Author updated successfully. authorId={}", authorId);
         return authorMapper.toDto(author);
     }
 
     @Override
     public AuthorResponseDto getAuthorById(Long authorId) {
-
+        log.debug("Fetching Author. authorId={}", authorId);
         Author author = authorRepository.findByAuthorIdAndIsActiveTrue(authorId)
                 .orElseThrow(() -> new NotFoundException("Author not found with id : " + authorId));
 
@@ -77,6 +83,12 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public PageDto<AuthorResponseDto> getAllAuthors(Pageable pageable) {
+
+        log.debug(
+                "Fetching Authors. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
 
         Page<Author> authors = authorRepository.findByIsActiveTrue(pageable);
 
@@ -103,10 +115,15 @@ public class AuthorServiceImpl implements AuthorService{
     @Transactional
     public void deleteAuthor(Long authorId) {
 
+        log.info("Soft deleting author. authorId={}", authorId);
+
         Author author = authorRepository.findByAuthorIdAndIsActiveTrue(authorId)
                 .orElseThrow(() -> new NotFoundException("Author not found with id : " + authorId));
 
         author.setIsActive(false);
+        authorRepository.save(author);
+
+        log.info("Author deleted successfully. authorId={}", authorId);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.tss.bookstore.service;
 
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.tss.bookstore.dto.PageDto;
 import com.tss.bookstore.dto.PublisherRequestDto;
@@ -24,16 +26,23 @@ public class PublisherServiceImpl implements PublisherService{
     private final PublisherRepository publisherRepository;
     private final PublisherMapper publisherMapper;
 
+    private static final Logger log= LoggerFactory.getLogger(PublisherServiceImpl.class);
+
     @Override
     @Transactional
     public PublisherResponseDto addPublisher(PublisherRequestDto requestDto) {
-
+        log.info("Creating publisher with name: {}", requestDto.getName());
         if (publisherRepository.existsByEmailIgnoreCase(requestDto.getEmail())) {
             throw new DuplicateResourceException("Publisher already exists with email : " + requestDto.getEmail());
         }
 
         Publisher publisher = publisherMapper.toEntity(requestDto);
         Publisher savedPublisher = publisherRepository.save(publisher);
+        log.info(
+                "Publisher created successfully. publisherId={}, name={}",
+                savedPublisher.getPublisherId(),
+                savedPublisher.getName()
+        );
         return publisherMapper.toDto(savedPublisher);
     }
 
@@ -41,6 +50,7 @@ public class PublisherServiceImpl implements PublisherService{
     @Transactional
     public PublisherResponseDto updatePublisher(Long publisherId, PublisherRequestDto requestDto) {
 
+        log.info("Updating publisher. publisherId={}", publisherId);
         Publisher publisher = publisherRepository.findByPublisherIdAndIsActiveTrue(publisherId)
                 .orElseThrow(() -> new NotFoundException("Publisher not found with id : " + publisherId));
 
@@ -54,11 +64,13 @@ public class PublisherServiceImpl implements PublisherService{
         publisher.setAddress(requestDto.getAddress());
 
         publisherRepository.save(publisher);
+        log.info("Publisher updated successfully. publisherId={}", publisher.getPublisherId());
         return publisherMapper.toDto(publisher);
     }
 
     @Override
     public PublisherResponseDto getPublisherById(Long publisherId) {
+        log.debug("Fetching publisher. publisherId={}", publisherId);
 
         Publisher publisher = publisherRepository.findByPublisherIdAndIsActiveTrue(publisherId)
                 .orElseThrow(() -> new NotFoundException("Publisher not found with id : " + publisherId));
@@ -69,6 +81,11 @@ public class PublisherServiceImpl implements PublisherService{
     @Override
     public PageDto<PublisherResponseDto> getAllPublishers(Pageable pageable) {
 
+        log.debug(
+                "Fetching publishers. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
         Page<Publisher> publishers = publisherRepository.findByIsActiveTrue(pageable);
 
         List<PublisherResponseDto> responseDtos = new ArrayList<>();
@@ -95,12 +112,14 @@ public class PublisherServiceImpl implements PublisherService{
     @Override
     @Transactional
     public void deletePublisher(Long publisherId) {
+        log.info("Soft deleting publisher. publisherId={}", publisherId);
 
         Publisher publisher = publisherRepository.findByPublisherIdAndIsActiveTrue(publisherId)
                 .orElseThrow(() -> new NotFoundException("Publisher not found with id : " + publisherId));
 
         publisher.setIsActive(false);
         publisherRepository.save(publisher);
+        log.info("Publisher deleted successfully. publisherId={}", publisherId);
     }
 
 }
