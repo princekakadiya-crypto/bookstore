@@ -1,9 +1,6 @@
 package com.tss.bookstore.controller;
 
-import com.tss.bookstore.dto.BookRequestDto;
-import com.tss.bookstore.dto.BookResponseDto;
-import com.tss.bookstore.dto.PageDto;
-import com.tss.bookstore.dto.StockRequestDto;
+import com.tss.bookstore.dto.*;
 import com.tss.bookstore.service.BookService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -51,6 +48,22 @@ public class BookController {
             Pageable pageable) {
         return ResponseEntity.ok(
                 bookService.getAllBooks(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable)
+        );
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<PageDto<BookDetailsResponseDto>> getAllBooksDetails(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long authorId,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean inStock,
+            Pageable pageable) {
+        return ResponseEntity.ok(
+                bookService.getAllBooksDetails(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable)
         );
     }
 

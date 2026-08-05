@@ -76,7 +76,7 @@ public class BookServiceImpl implements BookService{
                 savedBook.getTitle()
         );
 
-        return convertToResponse(savedBook);
+        return bookMapper.toDto(savedBook);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class BookServiceImpl implements BookService{
 
         log.info("Book updated successfully. bookId={}", book.getBookId());
 
-        return convertToResponse(book);
+        return bookMapper.toDto(book);
     }
 
     @Override
@@ -120,7 +120,35 @@ public class BookServiceImpl implements BookService{
         Book book = bookRepository.findByBookIdAndIsActiveTrue(bookId)
                         .orElseThrow(()->new NotFoundException("Book not found"));
 
-        return convertToResponse(book);
+        return bookMapper.toDto(book);
+    }
+
+    @Override
+    public PageDto<BookDetailsResponseDto> getAllBooksDetails(String title, Long categoryId,String category,Long authorId,String author, Double minPrice, Double maxPrice,Boolean inStock,Pageable pageable) {
+
+        log.debug(
+                "Fetching books. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new IllegalArgumentException("Maximum price must be greater than or equal to minimum price.");
+        }
+
+        Page<BookDetailsResponseDto> books = bookRepository.searchBooksDetails(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable);
+
+        PageDto<BookDetailsResponseDto> pageDto = new PageDto<>();
+        pageDto.setContent(books.getContent());
+        pageDto.setCurrentPage(books.getNumber());
+        pageDto.setPageSize(books.getSize());
+        pageDto.setTotalPages(books.getTotalPages());
+        pageDto.setTotalElements(books.getTotalElements());
+        pageDto.setFirst(books.isFirst());
+        pageDto.setLast(books.isLast());
+        pageDto.setEmpty(books.isEmpty());
+
+        return pageDto;
     }
 
     @Override
@@ -174,7 +202,7 @@ public class BookServiceImpl implements BookService{
 
         List<BookResponseDto> responseDtos = new ArrayList<>();
         for(Book book : books.getContent()){
-            responseDtos.add(convertToResponse(book));
+            responseDtos.add(bookMapper.toDto(book));
         }
 
         PageDto<BookResponseDto> pageDto = new PageDto<>();
@@ -224,23 +252,6 @@ public class BookServiceImpl implements BookService{
         }
 
         return reviewRepository.getAverageRating(bookId);
-    }
-
-    private BookResponseDto convertToResponse(Book book){
-        BookResponseDto dto = bookMapper.toDto(book);
-
-        Set<String> authorNames = new HashSet<>();
-        for(Author author : book.getAuthors()){
-            authorNames.add(author.getName());
-        }
-        //dto.setAuthorNames(authorNames);
-        dto.setPublisherName(
-                book.getPublisher().getName()
-        );
-        dto.setCategoryName(
-                book.getCategory().getName()
-        );
-        return dto;
     }
 
 }
