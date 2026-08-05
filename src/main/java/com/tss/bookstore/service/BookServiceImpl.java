@@ -136,15 +136,10 @@ public class BookServiceImpl implements BookService{
             throw new IllegalArgumentException("Maximum price must be greater than or equal to minimum price.");
         }
 
-        Page<Book> books = bookRepository.searchBooks(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable);
-
-        List<BookResponseDto> responseDtos = new ArrayList<>();
-        for(Book book : books.getContent()){
-            responseDtos.add(convertToResponse(book));
-        }
+        Page<BookResponseDto> books = bookRepository.searchBooks(title, categoryId,category,authorId,author, minPrice, maxPrice,inStock, pageable);
 
         PageDto<BookResponseDto> pageDto = new PageDto<>();
-        pageDto.setContent(responseDtos);
+        pageDto.setContent(books.getContent());
         pageDto.setCurrentPage(books.getNumber());
         pageDto.setPageSize(books.getSize());
         pageDto.setTotalPages(books.getTotalPages());
@@ -238,7 +233,7 @@ public class BookServiceImpl implements BookService{
         for(Author author : book.getAuthors()){
             authorNames.add(author.getName());
         }
-        dto.setAuthorNames(authorNames);
+        //dto.setAuthorNames(authorNames);
         dto.setPublisherName(
                 book.getPublisher().getName()
         );

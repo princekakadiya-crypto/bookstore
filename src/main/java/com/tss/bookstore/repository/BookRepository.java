@@ -1,5 +1,6 @@
 package com.tss.bookstore.repository;
 
+import com.tss.bookstore.dto.BookResponseDto;
 import com.tss.bookstore.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,15 @@ public interface BookRepository extends JpaRepository<Book,Long>{
     Page<Book> findByAuthorsAuthorId(Long authorId, Pageable pageable);
 
     @Query(value = """
-        SELECT DISTINCT b.*
+        SELECT 
+            b.book_id AS bookId,
+            b.title AS title,
+            b.price AS price,
+            b.isbn AS ISBN,
+            b.stock AS stock,
+            STRING_AGG(DISTINCT a.name, ',') AS authorNames,
+            p.name AS publisherName,
+            c.name AS categoryName
         FROM book b
         LEFT JOIN category c 
             ON b.category_id = c.category_id
@@ -34,6 +43,8 @@ public interface BookRepository extends JpaRepository<Book,Long>{
             ON b.book_id = ba.book_id
         LEFT JOIN author a 
             ON ba.author_id = a.author_id
+        LEFT JOIN publisher p 
+            ON p.publisher_id= b.publisher_id
         WHERE
             (:title IS NULL OR b.title ILIKE '%' || :title || '%')
             AND (:categoryId IS NULL OR c.category_id = :categoryId)
@@ -44,9 +55,19 @@ public interface BookRepository extends JpaRepository<Book,Long>{
             AND (:maxPrice IS NULL OR b.price <= :maxPrice)
             AND (:inStock IS NULL OR 
                  (:inStock = true AND b.stock > 0)
-                 OR (:inStock = false AND b.stock = 0))
+                 OR (:inStock = false AND b.stock = 0)
+        )
+        GROUP BY
+                b.book_id,
+                b.title,
+                b.price,
+                b.isbn,
+                b.stock,
+                p.name,
+                c.name
+            
         """, nativeQuery = true)
-    Page<Book> searchBooks(
+    Page<BookResponseDto> searchBooks(
             @Param("title") String title,
             @Param("categoryId") Long categoryId,
             @Param("category") String category,

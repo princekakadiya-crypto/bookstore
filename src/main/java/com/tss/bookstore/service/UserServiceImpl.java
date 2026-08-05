@@ -1,8 +1,6 @@
 package com.tss.bookstore.service;
 
-import com.tss.bookstore.dto.PageDto;
-import com.tss.bookstore.dto.UserRequestDto;
-import com.tss.bookstore.dto.UserResponseDto;
+import com.tss.bookstore.dto.*;
 import com.tss.bookstore.entity.User;
 import com.tss.bookstore.entity.UserProfile;
 import com.tss.bookstore.exception.DuplicateResourceException;
@@ -50,7 +48,6 @@ public class UserServiceImpl implements UserService{
         User result=userRepository.save(user);
 
         UserResponseDto responseDto=userMapper.toDto(result);
-        responseDto.setProfile(userProfileMapper.toDto(result.getUserProfile()));
 
         log.info(
                 "User created successfully. userId={}, email={}",
@@ -91,8 +88,6 @@ public class UserServiceImpl implements UserService{
         log.info("User updated successfully. userId={}", userId);
 
         UserResponseDto responseDto=userMapper.toDto(result);
-        responseDto.setProfile(userProfileMapper.toDto(result.getUserProfile()));
-
 
         return responseDto;
     }
@@ -104,7 +99,6 @@ public class UserServiceImpl implements UserService{
                 ()-> new NotFoundException("User Not Found")
         );
         UserResponseDto responseDto=userMapper.toDto(user);
-        responseDto.setProfile(userProfileMapper.toDto(user.getUserProfile()));
 
         return responseDto;
     }
@@ -123,7 +117,6 @@ public class UserServiceImpl implements UserService{
 
         for (User user : users.getContent()) {
             UserResponseDto dto = userMapper.toDto(user);
-            dto.setProfile(userProfileMapper.toDto(user.getUserProfile()));
             responseDtos.add(dto);
         }
 
@@ -150,5 +143,58 @@ public class UserServiceImpl implements UserService{
         user.setActive(false);
         userRepository.save(user);
         log.info("User deleted successfully. userId={}", userId);
+    }
+
+    @Override
+    public UserProfileResponseDto getUserProfile(Long userId) {
+        log.debug("Fetching user profile. userId={}", userId);
+
+        User user = userRepository.findByIdWithProfile(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id : " + userId));
+        return userProfileMapper.toDto(user.getUserProfile());
+    }
+
+    @Override
+    public UserWithProfileResponse getUserWithProfile(Long userId) {
+        log.debug("Fetching user with profile. userId={}", userId);
+
+        User user = userRepository.findByIdWithProfile(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with id : " + userId));
+
+        UserWithProfileResponse response=userMapper.toProfileDto(user);
+        response.setProfile(userProfileMapper.toDto(user.getUserProfile()));
+
+        return response;
+    }
+
+    @Override
+    public PageDto<UserWithProfileResponse> getAllUserDetails(Pageable pageable) {
+        log.debug(
+                "Fetching users. page={}, size={}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        Page<User> users = userRepository.findActiveUsersWithProfile(pageable);
+        List<UserWithProfileResponse> responseDtos = new ArrayList<>();
+
+        for (User user : users.getContent()) {
+            UserWithProfileResponse dto = userMapper.toProfileDto(user);
+            dto.setProfile(userProfileMapper.toDto(user.getUserProfile()));
+            responseDtos.add(dto);
+        }
+
+        PageDto<UserWithProfileResponse> pageDto = new PageDto<>();
+
+        pageDto.setContent(responseDtos);
+        pageDto.setCurrentPage(users.getNumber());
+        pageDto.setPageSize(users.getSize());
+        pageDto.setTotalPages(users.getTotalPages());
+        pageDto.setTotalElements(users.getTotalElements());
+        pageDto.setFirst(users.isFirst());
+        pageDto.setLast(users.isLast());
+        pageDto.setEmpty(users.isEmpty());
+
+        return pageDto;
     }
 }

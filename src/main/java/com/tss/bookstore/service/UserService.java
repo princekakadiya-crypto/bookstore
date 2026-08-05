@@ -1,8 +1,6 @@
 package com.tss.bookstore.service;
 
-import com.tss.bookstore.dto.PageDto;
-import com.tss.bookstore.dto.UserRequestDto;
-import com.tss.bookstore.dto.UserResponseDto;
+import com.tss.bookstore.dto.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -13,4 +11,9 @@ public interface UserService {
     UserResponseDto getUserById(Long userId);
     PageDto getAllUser(Pageable pageable);
     void deleteUser(Long userId);
+
+    UserProfileResponseDto getUserProfile(Long userId);
+    UserWithProfileResponse getUserWithProfile(Long userId);
+
+    PageDto<UserWithProfileResponse> getAllUserDetails(Pageable pageable);
 }

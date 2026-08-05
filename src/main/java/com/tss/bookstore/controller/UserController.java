@@ -1,8 +1,6 @@
 package com.tss.bookstore.controller;
 
-import com.tss.bookstore.dto.PageDto;
-import com.tss.bookstore.dto.UserRequestDto;
-import com.tss.bookstore.dto.UserResponseDto;
+import com.tss.bookstore.dto.*;
 import com.tss.bookstore.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -42,10 +40,31 @@ public class UserController {
         );
     }
 
+    @GetMapping("/users/details")
+    public ResponseEntity<PageDto<UserWithProfileResponse>> getUsersDetails(Pageable pageable) {
+        return ResponseEntity.ok(
+                userService.getAllUserDetails(pageable)
+        );
+    }
+
     @GetMapping("/users")
     public ResponseEntity<PageDto<UserResponseDto>> getUsers(Pageable pageable) {
         return ResponseEntity.ok(
                 userService.getAllUser(pageable)
+        );
+    }
+
+    @GetMapping("/users/{userId}/profile")
+    public ResponseEntity<UserProfileResponseDto> getUserProfile(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                userService.getUserProfile(userId)
+        );
+    }
+
+    @GetMapping("/users/{userId}/details")
+    public ResponseEntity<UserWithProfileResponse> getUserWithProfile(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                userService.getUserWithProfile(userId)
         );
     }
 
@@ -54,6 +73,5 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
-
 
 }
