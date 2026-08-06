@@ -155,7 +155,7 @@ public class BookServiceImpl implements BookService{
     public PageDto<BookResponseDto> getAllBooks(String title, Long categoryId,String category,Long authorId,String author, Double minPrice, Double maxPrice,Boolean inStock,Pageable pageable) {
 
         log.debug(
-                "Fetching books. page={}, size={}",
+                "Fetching books details. page={}, size={}",
                 pageable.getPageNumber(),
                 pageable.getPageSize()
         );
